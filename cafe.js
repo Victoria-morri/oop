@@ -1,204 +1,86 @@
 class Food {
-    constructor(){
-        this.cal={'coffee': 20,
-                    'cola': 40,
-                    'small': 20,
-                    'large': 40,
-                    'chesse': 20,
-                    'salad': 5,
-                    'potato': 10,
-                    'olivie': 80,
-                    'cezar': 20 };
-        this.price={'coffee': 80,
-                    'cola': 50,
-                    'small': 50,
-                    'large': 100,
-                    'chesse': 10,
-                    'salad': 20,
-                    'potato': 15,
-                    'olivie': 50,
-                    'cezar': 100 };
+    constructor(options) {
+        this.name = options.name;
     }
-    getCalories(...args){
-        let calories = 0;
-        if (args.length===0){
-            throw new Error("Choose the type of food");
-        }
-        if(args.length>1 && typeof args[1] === 'number'){// проверка , что второй арг это number значит салат, считаем по другому
-            this.checkValidityCal([args[0]]);
-            calories += (this.cal[args[0]] / 100 * args[1]);
-        } else{
-            this.checkValidityCal(args);
-            for(let i = 0; i< args.length; i++){
-                calories += this.cal[args[i]];
-            }
-        }
-        return calories;
+    getName() {
+        return this.name;
     }
-    checkValidityCal(args){// Проверка на наличие позиции в словаре каллорий
-        if(args.filter((elem)=>{
-            return this.cal[elem] === undefined;
-        }).length > 0){
-            throw new Error(`have not this position`);
-        }
+}
+class Hamburger extends Food{
+    constructor(options) {
+        super(options);
+        this.SIZES = [{size: 'small', price: '50', calories: '20'}, {size: 'large', price: '100', calories: '40'}];
+        this.STUFFINGS = [{stuffing: 'cheese', price: '10', calories: '20'},
+            {stuffing: 'salad', price: '20', calories: '5'},
+            {stuffing: 'potato', price: '15', calories: '10'}
+        ];
+        this.stuffing = options.stuffing;
+        this.size = options.size;
     }
 
-    checkValidityPrice(args){// Проверка на наличие позиции в словаре цен
-        if(args.filter((elem)=>{
-            return this.price[elem] === undefined;
-        }).length > 0){
+    calculatePrice() {
+        if(!this.SIZES.find((elem)=>{return elem.size === this.size})||!this.STUFFINGS.find((elem)=>{return elem.stuffing === this.stuffing})){
             throw new Error(`have not this position in menu`);
         }
-    }
-
-    getPrice(...args) {
-        let price = 0;
-        if (args.length===0){
-            throw new Error("Choose the type of food");
-        }
-        if(args.length>1 && typeof args[1] === 'number'){
-            this.checkValidityPrice([args[0]]);
-            price += (this.price[args[0]] / 100 * args[1]);
-        } else{
-            this.checkValidityPrice(args);
-            for(let i = 0; i< args.length; i++){
-                price += this.price[args[i]];
-            }
-        }
+        const priceOfSize = Number(this.SIZES.find((elem)=>{return elem.size === this.size}).price);
+        const priceOfStuffing = Number(this.STUFFINGS.find((elem)=>{return elem.stuffing === this.stuffing}).price);
+        const price = priceOfSize + priceOfStuffing;
         return price;
     }
-}
-/**
-* Класс, объекты которого описывают параметры гамбургера.
-*
-* @constructor
-* @param size        Размер
-* @param stuffing    Начинка
-*/
-class Hamburger extends Food{
-    constructor(size, stuffing) {
-        super();
-        switch(size){
-            case 'small':
-            this.SIZE_SMALL = size;
-            break;
-            case 'large':
-            this.SIZE_LARGE = size;
-            break;
-            default:
-            break;
-        }
 
-        switch(stuffing){
-            case 'chesse':
-            this.STUFFING_CHEESE = stuffing;
-            break;
-            case 'salad':
-            this.STUFFING_SALAD = stuffing;
-            break;
-            case 'potato':
-            this.STUFFING_POTATO = stuffing;
-            break;
-            default:
-            break;
+    calculateCalories(){
+        if(!this.SIZES.find((elem)=>{return elem.size === this.size})||!this.STUFFINGS.find((elem)=>{return elem.stuffing === this.stuffing})){
+            throw new Error(`have not this position in menu`);
         }
+        const caloriesOfSize = Number(this.SIZES.find((elem)=>{return elem.size === this.size}).calories);
+        const caloriesOfStuffing = Number(this.STUFFINGS.find((elem)=>{return elem.stuffing === this.stuffing}).calories);
+        const calories = caloriesOfSize + caloriesOfStuffing;
+        return calories;
     }
-
-/**
- * Узнать размер гамбургера
- */
-getSize() {
-    return this.SIZE_SMALL || this.SIZE_LARGE;
 }
-
-/**
- * Узнать начинку гамбургера
- */
-getStuffing() {
-    return this.STUFFING_CHEESE || this.STUFFING_SALAD || this.STUFFING_POTATO;
-}
-/**
- * Узнать цену гамбургера
- * @return {Number} Цена в тугриках
- */
-calculatePrice() {
-    // композиция
-    const price = this.getPrice(this.getSize(), this.getStuffing());
-    return price;
-}
-/**
- * Узнать калорийность
- * @return {Number} Калорийность в калориях
- */
-calculateCalories(){
-    // композиция
-    const calories = this.getCalories(this.getSize(), this.getStuffing());
-    return calories;
-}
-}
-
 class Salad extends Food{
-    constructor(salad_type, weight){
-        super();
-        switch(salad_type){
-            case 'olivie':
-            this.SALAD_OLIVIE = salad_type;
-            break;
-            case 'cezar':
-            this.SALAD_CEZAR = salad_type;
-            break;
-            default:
-                break;
-        }
-        this.SALAD_WEIGHT=weight;
+    constructor(options) {
+    super(options);
+    this.type = options.type;
+    this.weight = options.weight;
+    this.TYPES = [{type: 'olivie', price: '50', calories: '80'}, {type: 'caesar', price: '100', calories: '20'}];
+    this.SERVING_WEIGHT = 100;
     }
-    getSaladType(){
-        return this.SALAD_OLIVIE || this.SALAD_CEZAR;
-    }
-    getSaladWeight(){
-        return this.SALAD_WEIGHT;
-    }
+
     calculatePrice(){
-        const price = this.getPrice(this.getSaladType(), this.getSaladWeight());
+        if(!this.TYPES.find((elem)=>{return elem.type === this.type})){
+            throw new Error(`have not this position in menu`);
+        }
+        const priceOfType = Number(this.TYPES.find((elem)=>{return elem.type === this.type}).price)/this.SERVING_WEIGHT;
+        const price = priceOfType * Number(this.weight);
         return price;
     }
     calculateCalories(){
-        const calories = this.getCalories(this.getSaladType(), this.getSaladWeight());
+        if(!this.TYPES.find((elem)=>{return elem.type === this.type})){
+            throw new Error(`have not this position in menu`);
+        }
+        const calsOfType = Number(this.TYPES.find((elem)=>{return elem.type === this.type}).calories)/this.SERVING_WEIGHT;
+        const calories = calsOfType * Number(this.weight);
         return calories;
     }
 }
 
 class Drink extends Food{
-    constructor(drink){
-        super();
-        switch(drink){
-            case('cola'):
-            this.DRINK_COLA = drink;
-            break;
-            case('coffee'):
-            this.DRINK_COFFEE = drink;
-            break;
-            default:
-                break;
-        }
+    constructor(options) {
+        super(options);
+        this.type = options.type;
+        this.TYPES = [{type: 'cola', price: '50', calories: '40'}, {type: 'coffee', price: '80', calories: '20'}];
     }
 
-    getDrink(){
-        return  this.DRINK_COLA || this.DRINK_COFFEE;
-    }
     calculatePrice(){
-        const price = this.getPrice(this.getDrink());
+        const price = Number(this.TYPES.find((elem)=>{return elem.type === this.type}).price);
         return price;
     }
     calculateCalories(){
-        const calories = this.getCalories(this.getDrink());
+        const calories = Number(this.TYPES.find((elem)=>{return elem.type === this.type}).calories);
         return calories;
     }
 }
-/**
-* Класс, объекты которого добавляют и удаляют позиции, подсчитывают общую стоимость и фиксируют заказ после оплаты.
-*
-*/
 class Order{
     constructor(){
         this.HAMBUGER_LIST = [];
@@ -207,99 +89,89 @@ class Order{
         this.ORDER_PAID = false;// флаг, при true нельзя изменять объект
     }
 
-    addHamburger(size, stuffing){
+    addItem(order){
         if(this.ORDER_PAID){// проверка, оплачен ли заказ и можно ли его менять
             return console.log('Order already paid, you can`t edit the order');
         }else{
-            if (!size || !stuffing) {// проверка , а все ли аргументы переданы
-                return console.log("Choose the size of your hamburger and the stuffing");
+            switch (order.name) {
+                case 'hamburger':
+                    if (!order.size || !order.stuffing) {// проверка , а все ли аргументы переданы
+                        return console.log("Choose the size of your hamburger and the stuffing");
+                    }
+                   if(this.HAMBUGER_LIST.filter(item=>item.size===order.size&&item.stuffing===order.stuffing).length>0){// проверка, есть ли данная позиция в заказе
+                    return console.log('Order already has this position, choose ahother one');
+                   }else{
+                    this.HAMBUGER_LIST.push(order);
+                   }
+                    break;
+                case 'salad':
+                    if (!order.type || !order.weight) {
+                        return console.log("Choose the salad type or weight");
+                    }
+                   if(this.SALAD_LIST.find(item=>item.type === order.type&&item.weight===order.weight)){
+                    return console.log('Order already has this position, choose ahother one');
+                   }else{
+                    this.SALAD_LIST.push(order);
+                   }
+                    break;
+                case 'drink':
+                    if (!order.type) {
+                        return console.log("Choose the drink");
+                    }
+                   if(this.DRINK.find(item=>item.type === order.type)){
+                    return console.log('Order already has this position, choose ahother one');
+                   }else{
+                    this.DRINK.push(order);
+                   }
+                    break;
             }
-           if(this.HAMBUGER_LIST.filter(item=>item.includes(size)&&item.includes(stuffing)).length>0){// проверка, есть ли данная позиция в заказе
-            return console.log('Order already has this position, choose ahother one');
-           }else{
-            this.HAMBUGER_LIST.push([size, stuffing]);
-           }
         }
     }
 
-    removeHamburger(size, stuffing){
-        if(this.ORDER_PAID){
+    removeItem(order){
+        if(this.ORDER_PAID){// проверка, оплачен ли заказ и можно ли его менять
             return console.log('Order already paid, you can`t edit the order');
         }else{
-            if (!size || !stuffing) {
-                return console.log("Choose the size of your hamburger and the stuffing");
+            switch (order.name) {
+                case 'hamburger':
+                    if (!order.size || !order.stuffing) {
+                        return console.log("Choose the size of your hamburger and the stuffing");
+                    }
+                   if(this.HAMBUGER_LIST.filter(item=>item.size===order.size&&item.stuffing===order.stuffing).length===0){
+                    return console.log('Order has not this position, choose ahother one');
+                   }else{
+                    let index = this.HAMBUGER_LIST.findIndex(function(item){
+                    return item.size&&item.stuffing
+                    });
+                    this.HAMBUGER_LIST.splice(index, 1);
+                   }
+                    break;
+                case 'salad':
+                    if (!order.type || !order.weight) {
+                        return console.log("Choose the salad type or weight");
+                    }
+                   if(!this.SALAD_LIST.find(item=>item.type === order.type&&item.weight===order.weight)){
+                    return console.log('Order has not this position, choose ahother one');
+                   }else{
+                    let index = this.SALAD_LIST.findIndex(function(item){
+                    return item.type === order.type&&item.weight===order.weight
+                    });
+                    this.SALAD_LIST.splice(index, 1);
+                   }
+                    break;
+                case 'drink':
+                    if (!order.type) {
+                        return console.log("Choose the drink");
+                    }
+                   if(!this.DRINK.find(item=>item.type === order.type)){
+                    return console.log('Order has not this position, choose ahother one');
+                   }else{
+                    let index = this.DRINK.findIndex((item)=>{return item.type === order.type});
+                    this.DRINK.splice(index, 1);
+                   }
+                    break;
             }
-           if(this.HAMBUGER_LIST.filter(item=>item.includes(size)&&item.includes(stuffing)).length===0){
-            return console.log('Order has not this position, choose ahother one');
-           }else{
-            let index = this.HAMBUGER_LIST.findIndex(function(item){
-            return item.includes(size)&&item.includes(stuffing)
-            });
-            this.HAMBUGER_LIST.splice(index, 1);
-           }
-        }
-    }
 
-    addSalad(salad_type, weight){
-        if(this.ORDER_PAID){
-            return console.log('Order already paid, you can`t edit the order');
-        }else{
-            if (!salad_type || !weight) {
-                return console.log("Choose the salad type or weight");
-            }
-           if(this.SALAD_LIST.filter(item=>item.includes(salad_type)&&item.includes(weight)).length>0){
-            return console.log('Order already has this position, choose ahother one');
-           }else{
-            this.SALAD_LIST.push([salad_type, weight]);
-           }
-        }
-    }
-    removeSalad(salad_type, weight){
-        if(this.ORDER_PAID){
-            return console.log('Order already paid, you can`t edit the order');
-        }else{
-            if (!salad_type || !weight) {
-                return console.log("Choose the salad type or weight");
-            }
-           if(this.SALAD_LIST.filter(item=>item.includes(salad_type)&&item.includes(weight)).length===0){
-            return console.log('Order has not this position, choose ahother one');
-           }else{
-              // console.log(this.HAMBUGER_LIST);
-            let index = this.SALAD_LIST.findIndex(function(item){
-            return item.includes(salad_type)&&item.includes(weight)
-            });
-            this.SALAD_LIST.splice(index, 1);
-            console.log(this.SALAD_LIST);
-           }
-        }
-    }
-    addDrink(drink){
-        if(this.ORDER_PAID){
-            return console.log('Order already paid, you can`t edit the order');
-        }else{
-            if (!this.DRINK) {
-                return console.log("Choose the drink");
-            }
-           if(this.DRINK.includes(drink)){
-            return console.log('Order already has this position, choose ahother one');
-           }else{
-            this.DRINK.push(drink);
-           }
-        }
-    }
-    removeDrink(drink){
-        if(this.ORDER_PAID){
-            return console.log('Order already paid, you can`t edit the order');
-        }else{
-            if (!drink) {
-                return console.log("Choose the drink");
-            }
-           if(!this.DRINK.includes(drink)){
-            return console.log('Order has not this position, choose ahother one');
-           }else{
-            let index = this.DRINK.indexOf(drink);
-            this.DRINK.splice(index, 1);
-           }
         }
     }
 
@@ -310,11 +182,11 @@ class Order{
     getOrderPrice(){// суммируем стоимость всего заказа
         let price = 0;
         this.HAMBUGER_LIST.forEach((item)=>{
-          let ham = new Hamburger(item[0],item[1]);
+          let ham = new Hamburger(item);
           price += ham.calculatePrice();
         });
         this.SALAD_LIST.forEach((item)=>{
-            let salad = new Salad(item[0],item[1]);
+            let salad = new Salad(item);
             price += salad.calculatePrice();
           });
         this.DRINK.forEach((item)=>{
@@ -327,11 +199,11 @@ class Order{
     getOrderCalories(){// суммируем каллории всего заказа
         let calories = 0;
         this.HAMBUGER_LIST.forEach((item)=>{
-          let ham = new Hamburger(item[0],item[1]);
+          let ham = new Hamburger(item);
           calories += ham.calculateCalories();
         });
         this.SALAD_LIST.forEach((item)=>{
-            let salad = new Salad(item[0],item[1]);
+            let salad = new Salad(item);
             calories += salad.calculateCalories();
           });
         this.DRINK.forEach((item)=>{
@@ -345,23 +217,25 @@ class Order{
         this.ORDER_PAID = true;
     }
 }
-// код для тестирования
+// code for test
 // const ord1 = new Order();
-// ord1.addHamburger('large','chesse');
-// ord1.addHamburger('large','potato');// добавляет позицию т.к. начинка отличается
-// ord1.removeHamburger('large','chesse');
-// ord1.addHamburger('large','salad');
-// ord1.addSalad('olivie', 120);
-// ord1.addSalad('cezar', 120);
-// ord1.removeSalad('olivie', 120);
-// ord1.addDrink('coffee');
-// ord1.addDrink('coffee');// выводит в консоль ошибку, т.к. позиция уже есть в заказе
-// ord1.addDrink('cola');
-// ord1.removeDrink('cola');
-
-// ord1.addDrink('cola');// добавляет колу т.к. в заказе она отсутствует(прошлая удалена)
-// ord1.payOrder();
+// ord1.addItem({name:'hamburger', stuffing:'cheese', size:'large'});
+// ord1.addItem({name:'hamburger', stuffing:'potato', size:'large'});
+// ord1.addItem({name:'hamburger', stuffing:'cheese', size:'large'});
+// ord1.removeItem({name:'hamburger', stuffing:'cheese', size:'large'});
+// ord1.addItem({name:'hamburger', stuffing:'salad', size:'large'});
+// ord1.addItem({name:'salad', type:'olivie', weight: '120'})
+// ord1.addItem({name:'salad', type:'olivie', weight: '120'})
+// ord1.removeItem({name:'salad', type:'olivie', weight: '120'})
+// ord1.addItem({name:'salad', type:'caesar', weight: '120'})
+// ord1.addItem({name:'salad', type:'olivie', weight: '120'})
+// ord1.getOrderPrice();
+// ord1.getOrderCalories();
+// ord1.addItem({name: 'drink', type: 'coffee'});
+// ord1.addItem({name: 'drink', type: 'coffee'});
+// ord1.addItem({name: 'drink', type: 'cola'});
+// ord1.removeItem({name: 'drink', type: 'cola'});
+// ord1.addItem({name: 'drink', type: 'coffee'});
+// console.log(ord1.getOrderList());
 // console.log(ord1.getOrderPrice());
 // console.log(ord1.getOrderCalories());
-// ord1.addDrink('cola');
-// console.log(ord1.getOrderList());
