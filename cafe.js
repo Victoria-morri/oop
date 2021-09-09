@@ -1,13 +1,13 @@
-class Food {
-    constructor(options) {
+class Food{
+    constructor(options){
         this.name = options.name;
     }
-    getName() {
+    getName(){
         return this.name;
     }
 }
 class Hamburger extends Food{
-    constructor(options) {
+    constructor(options){
         super(options);
         this.SIZES = [{size: 'small', price: '50', calories: '20'}, {size: 'large', price: '100', calories: '40'}];
         this.STUFFINGS = [{stuffing: 'cheese', price: '10', calories: '20'},
@@ -18,10 +18,10 @@ class Hamburger extends Food{
         this.size = options.size;
     }
 
-    calculatePrice() {
+    calculatePrice(){
         if(!this.SIZES.find((elem)=>{return elem.size === this.size})||!this.STUFFINGS.find((elem)=>{return elem.stuffing === this.stuffing})){
             throw new Error(`have not this position in menu`);
-        }
+        };
         const priceOfSize = Number(this.SIZES.find((elem)=>{return elem.size === this.size}).price);
         const priceOfStuffing = Number(this.STUFFINGS.find((elem)=>{return elem.stuffing === this.stuffing}).price);
         const price = priceOfSize + priceOfStuffing;
@@ -31,7 +31,7 @@ class Hamburger extends Food{
     calculateCalories(){
         if(!this.SIZES.find((elem)=>{return elem.size === this.size})||!this.STUFFINGS.find((elem)=>{return elem.stuffing === this.stuffing})){
             throw new Error(`have not this position in menu`);
-        }
+        };
         const caloriesOfSize = Number(this.SIZES.find((elem)=>{return elem.size === this.size}).calories);
         const caloriesOfStuffing = Number(this.STUFFINGS.find((elem)=>{return elem.stuffing === this.stuffing}).calories);
         const calories = caloriesOfSize + caloriesOfStuffing;
@@ -39,7 +39,7 @@ class Hamburger extends Food{
     }
 }
 class Salad extends Food{
-    constructor(options) {
+    constructor(options){
     super(options);
     this.type = options.type;
     this.weight = options.weight;
@@ -50,7 +50,7 @@ class Salad extends Food{
     calculatePrice(){
         if(!this.TYPES.find((elem)=>{return elem.type === this.type})){
             throw new Error(`have not this position in menu`);
-        }
+        };
         const priceOfType = Number(this.TYPES.find((elem)=>{return elem.type === this.type}).price)/this.SERVING_WEIGHT;
         const price = priceOfType * Number(this.weight);
         return price;
@@ -58,7 +58,7 @@ class Salad extends Food{
     calculateCalories(){
         if(!this.TYPES.find((elem)=>{return elem.type === this.type})){
             throw new Error(`have not this position in menu`);
-        }
+        };
         const calsOfType = Number(this.TYPES.find((elem)=>{return elem.type === this.type}).calories)/this.SERVING_WEIGHT;
         const calories = calsOfType * Number(this.weight);
         return calories;
@@ -66,7 +66,7 @@ class Salad extends Food{
 }
 
 class Drink extends Food{
-    constructor(options) {
+    constructor(options){
         super(options);
         this.type = options.type;
         this.TYPES = [{type: 'cola', price: '50', calories: '40'}, {type: 'coffee', price: '80', calories: '20'}];
@@ -92,86 +92,84 @@ class Order{
     addItem(order){
         if(this.ORDER_PAID){// проверка, оплачен ли заказ и можно ли его менять
             return console.log('Order already paid, you can`t edit the order');
-        }else{
-            switch (order.name) {
-                case 'hamburger':
-                    if (!order.size || !order.stuffing) {// проверка , а все ли аргументы переданы
-                        return console.log("Choose the size of your hamburger and the stuffing");
-                    }
-                   if(this.HAMBUGER_LIST.filter(item=>item.size===order.size&&item.stuffing===order.stuffing).length>0){// проверка, есть ли данная позиция в заказе
-                    return console.log('Order already has this position, choose ahother one');
-                   }else{
-                    this.HAMBUGER_LIST.push(order);
-                   }
-                    break;
-                case 'salad':
-                    if (!order.type || !order.weight) {
-                        return console.log("Choose the salad type or weight");
-                    }
-                   if(this.SALAD_LIST.find(item=>item.type === order.type&&item.weight===order.weight)){
-                    return console.log('Order already has this position, choose ahother one');
-                   }else{
-                    this.SALAD_LIST.push(order);
-                   }
-                    break;
-                case 'drink':
-                    if (!order.type) {
-                        return console.log("Choose the drink");
-                    }
-                   if(this.DRINK.find(item=>item.type === order.type)){
-                    return console.log('Order already has this position, choose ahother one');
-                   }else{
-                    this.DRINK.push(order);
-                   }
-                    break;
-            }
+        };
+        switch (order.name){
+            case 'hamburger':
+                if(!order.size || !order.stuffing){// проверка , а все ли аргументы переданы
+                    return console.log("Choose the size of your hamburger and the stuffing");
+                };
+                if(this.HAMBUGER_LIST.filter(item=>item.size===order.size&&item.stuffing===order.stuffing).length>0){// проверка, есть ли данная позиция в заказе
+                return console.log('Order already has this position, choose ahother one');
+                }else{
+                this.HAMBUGER_LIST.push(order);
+                };
+                break;
+            case 'salad':
+                if(!order.type || !order.weight){
+                    return console.log("Choose the salad type or weight");
+                };
+                if(this.SALAD_LIST.find(item=>item.type === order.type&&item.weight===order.weight)){
+                return console.log('Order already has this position, choose ahother one');
+                }else{
+                this.SALAD_LIST.push(order);
+                };
+                break;
+            case 'drink':
+                if(!order.type){
+                    return console.log("Choose the drink");
+                };
+                if(this.DRINK.find(item=>item.type === order.type)){
+                return console.log('Order already has this position, choose ahother one');
+                }else{
+                this.DRINK.push(order);
+                };
+                break;
         }
+
     }
 
     removeItem(order){
         if(this.ORDER_PAID){// проверка, оплачен ли заказ и можно ли его менять
             return console.log('Order already paid, you can`t edit the order');
-        }else{
-            switch (order.name) {
-                case 'hamburger':
-                    if (!order.size || !order.stuffing) {
-                        return console.log("Choose the size of your hamburger and the stuffing");
-                    }
-                   if(this.HAMBUGER_LIST.filter(item=>item.size===order.size&&item.stuffing===order.stuffing).length===0){
-                    return console.log('Order has not this position, choose ahother one');
-                   }else{
-                    let index = this.HAMBUGER_LIST.findIndex(function(item){
-                    return item.size&&item.stuffing
-                    });
-                    this.HAMBUGER_LIST.splice(index, 1);
-                   }
-                    break;
-                case 'salad':
-                    if (!order.type || !order.weight) {
-                        return console.log("Choose the salad type or weight");
-                    }
-                   if(!this.SALAD_LIST.find(item=>item.type === order.type&&item.weight===order.weight)){
-                    return console.log('Order has not this position, choose ahother one');
-                   }else{
-                    let index = this.SALAD_LIST.findIndex(function(item){
-                    return item.type === order.type&&item.weight===order.weight
-                    });
-                    this.SALAD_LIST.splice(index, 1);
-                   }
-                    break;
-                case 'drink':
-                    if (!order.type) {
-                        return console.log("Choose the drink");
-                    }
-                   if(!this.DRINK.find(item=>item.type === order.type)){
-                    return console.log('Order has not this position, choose ahother one');
-                   }else{
-                    let index = this.DRINK.findIndex((item)=>{return item.type === order.type});
-                    this.DRINK.splice(index, 1);
-                   }
-                    break;
-            }
-
+        }
+        switch (order.name){
+            case 'hamburger':
+                if(!order.size || !order.stuffing){
+                    return console.log("Choose the size of your hamburger and the stuffing");
+                };
+                if(this.HAMBUGER_LIST.filter(item=>item.size===order.size&&item.stuffing===order.stuffing).length===0){
+                return console.log('Order has not this position, choose ahother one');
+                }else{
+                let index = this.HAMBUGER_LIST.findIndex(function(item){
+                return item.size&&item.stuffing;
+                });
+                this.HAMBUGER_LIST.splice(index, 1);
+                }
+                break;
+            case 'salad':
+                if(!order.type || !order.weight){
+                    return console.log("Choose the salad type or weight");
+                };
+                if(!this.SALAD_LIST.find(item=>item.type === order.type&&item.weight===order.weight)){
+                return console.log('Order has not this position, choose ahother one');
+                }else{
+                let index = this.SALAD_LIST.findIndex(function(item){
+                return item.type === order.type&&item.weight===order.weight
+                });
+                this.SALAD_LIST.splice(index, 1);
+                };
+                break;
+            case 'drink':
+                if(!order.type){
+                    return console.log("Choose the drink");
+                };
+                if(!this.DRINK.find(item=>item.type === order.type)){
+                return console.log('Order has not this position, choose ahother one');
+                }else{
+                let index = this.DRINK.findIndex((item)=>{return item.type === order.type});
+                this.DRINK.splice(index, 1);
+                };
+                break;
         }
     }
 
@@ -213,7 +211,7 @@ class Order{
         return calories;
     }
 
-     payOrder(){
+    payOrder(){
         this.ORDER_PAID = true;
     }
 }
